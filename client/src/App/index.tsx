@@ -61,11 +61,16 @@ export default class App extends PureComponent<Props, State> {
         }
       }
     });
-    const payload = {
-      data: data.join(",")
-    };
 
     this.setState({ statusText: "Making inference..." });
+
+    fetch("/api/predict", {
+      method: "POST",
+      body: JSON.stringify({ data: data.join(",") }),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(res => res.json().then(value => console.log(value)))
+      .catch(err => console.log(err));
   };
 
   render() {

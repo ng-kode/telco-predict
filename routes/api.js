@@ -4,19 +4,35 @@ var AWS = require("aws-sdk");
 var router = express.Router();
 var sagemakerruntime = new AWS.SageMakerRuntime({ region: "us-east-1" });
 
-router.get("/predict", function(req, res, next) {
+router.post("/predict", function(req, res, next) {
+  const features = req.body.data;
+  if (!features) {
+    res.send({
+      status: "failed",
+      message: 'Missing "data" in request body'
+    });
+  }
+
   sagemakerruntime.invokeEndpoint(
     {
       EndpointName: "xgboost-telco-v1",
       ContentType: "text/csv",
-      Body:
-        "0.0,0.0,1.0,1.0,5.0,0.0,0.0,34.25,163.55,0.0,1.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0"
+      Body: features
     },
     function(err, data) {
       if (err) {
         console.log(err, err.stack); // an error occurred
+        res.send({
+          status: "failed",
+          message: "Prediction endpoint error"
+        });
       } else {
-        console.log(data.Body.toString()); // successful response
+        res.send(
+          {
+            status: "ok",
+            data: data.Body.toString()
+          } // successful response
+        );
       }
     }
   );
