@@ -69,23 +69,30 @@ export default class App extends PureComponent<Props, State> {
       body: JSON.stringify({ data: data.join(",") }),
       headers: { "Content-Type": "application/json" }
     })
-      .then(res => res.json().then((parsedRes: PredictResponse) => {
-        const { status, data } = parsedRes
-        if (status !== 'ok') {
-          this.handlePredictFailure(parsedRes)
-        }
+      .then(res =>
+        res.json().then((parsedRes: PredictResponse) => {
+          const { status, data } = parsedRes;
+          if (status !== "ok") {
+            this.handlePredictFailure(parsedRes);
+          }
 
-        const parsedValue = parseFloat(data || '');
-        this.setState({
-          status: parsedValue > 0.5 ? `Probably (${parsedValue.toFixed(2)})` : `Might not be (${parsedValue.toFixed(2)})`
+          const parsedValue = parseFloat(data || "");
+          this.setState({
+            status:
+              parsedValue > 0.5
+                ? `Probably (${parsedValue.toFixed(2)})`
+                : `Might not be (${parsedValue.toFixed(2)})`
+          });
         })
-      }))
+      )
       .catch(err => this.handlePredictFailure(err));
   };
 
   handlePredictFailure(res: any) {
-    this.setState({ status: 'Opp...someething went wrong, maybe try again later' })
-    console.log(res)
+    this.setState({
+      status: "Opp...someething went wrong, maybe try again later"
+    });
+    console.log(res);
   }
 
   render() {
@@ -129,7 +136,7 @@ export default class App extends PureComponent<Props, State> {
 }
 
 interface PredictResponse {
-  status: string
-  data?: string
-  message?: string
+  status: string;
+  data?: string;
+  message?: string;
 }
