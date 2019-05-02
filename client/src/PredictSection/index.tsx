@@ -97,6 +97,22 @@ export default class App extends PureComponent<Props, State> {
     console.log(res);
   }
 
+  getNumericalInputLabel = (attr: { name: string }): string => {
+    if (attr.name === "tenure") {
+      return `tenure (0 to 100)${String.fromCharCode(42)}`;
+    }
+
+    if (attr.name === "MonthlyCharges") {
+      return `MonthlyCharges (0 to 10)${String.fromCharCode(42)}`;
+    }
+
+    if (attr.name === "TotalCharges") {
+      return `TotalCharges (below 2000)${String.fromCharCode(42)}`;
+    }
+
+    return attr.name;
+  };
+
   render() {
     const { statusText } = this.state;
     return (
@@ -116,7 +132,7 @@ export default class App extends PureComponent<Props, State> {
                 handleChange={event =>
                   this.handleChange(attr, event.target.value)
                 }
-                label={attr.name}
+                label={this.getNumericalInputLabel(attr)}
               />
             ) : (
               <SelectGroup
@@ -132,11 +148,17 @@ export default class App extends PureComponent<Props, State> {
           )}
         </div>
 
+        <p className="mb-4">
+          {`${String.fromCharCode(
+            42
+          )} These are just "typical values" but of course you are free to try the wild ones.`}
+        </p>
+
         <div className="mt-3 mb-5 text-center">
           <div className="mb-2">
-            When you click{" "}
+            When You Click
             <button
-              className="btn btn-primary ml-1"
+              className="btn btn-primary ml-2"
               onClick={this.handlePredictClick}
             >
               Predict
