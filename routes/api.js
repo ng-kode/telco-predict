@@ -1,4 +1,5 @@
 var express = require("express");
+var cors = require("cors");
 var AWS = require("aws-sdk");
 
 var router = express.Router();
