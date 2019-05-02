@@ -4,11 +4,22 @@ var AWS = require("aws-sdk");
 var router = express.Router();
 var sagemakerruntime = new AWS.SageMakerRuntime({ region: "us-east-1" });
 
-router.post("/predict", function(req, res, next) {
+var whitelist = ["http://localhost:3000"];
+var corsOptions = {
+  origin: function(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+};
+
+router.post("/predict", cors(corsOptions), function(req, res, next) {
   const features = req.body.data;
   if (!features) {
     res.send({
-      status: "failed",
+      status: "error",
       message: 'Missing "data" in request body'
     });
   }
@@ -23,7 +34,7 @@ router.post("/predict", function(req, res, next) {
       if (err) {
         console.log(err, err.stack); // an error occurred
         res.send({
-          status: "failed",
+          status: "error",
           message: "Prediction endpoint error"
         });
       } else {
