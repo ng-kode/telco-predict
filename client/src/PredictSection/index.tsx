@@ -40,7 +40,7 @@ export default class App extends PureComponent<Props, State> {
     value: string
   ) => {
     this.setState({
-      [attr.name]: attr.isNumerical ? parseFloat(value) : parseInt(value)
+      [attr.name]: value
     });
   };
 
