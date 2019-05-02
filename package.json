@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prestart": "npm install && cd client/ && npm install && npm run build",
+    "prestart": "git pull && npm install --save-exact && cd client/ && npm install --save-exact && npm run build",
     "start": "node ./bin/www"
   },
   "dependencies": {
