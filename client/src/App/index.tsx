@@ -2,6 +2,7 @@ import React, { PureComponent, ChangeEvent } from "react";
 import SelectGroup, { Option } from "../SelectGroup";
 import NumberInput from "../NumberInput";
 import attributes from "./attributes";
+import { postPrediction } from "./api";
 
 interface Props {}
 interface State {
@@ -64,24 +65,20 @@ export default class App extends PureComponent<Props, State> {
 
     this.setState({ statusText: "Making inference..." });
 
-    fetch("/api/predict", {
-      method: "POST",
-      body: JSON.stringify({ data: data.join(",") }),
-      headers: { "Content-Type": "application/json" }
-    })
+    postPrediction(data)
       .then(res =>
         res.json().then((parsedRes: PredictResponse) => {
           const { status, data } = parsedRes;
           if (status !== "ok") {
-            this.handlePredictFailure(parsedRes);
+            return this.handlePredictFailure(parsedRes);
           }
 
           const parsedValue = parseFloat(data || "");
           this.setState({
-            status:
+            statusText:
               parsedValue > 0.5
-                ? `Probably (${parsedValue.toFixed(2)})`
-                : `Might not be (${parsedValue.toFixed(2)})`
+                ? `Probably (${(parsedValue * 100).toFixed(2)}%)`
+                : `Might not be (${(parsedValue * 100).toFixed(2)}%)`
           });
         })
       )
@@ -90,7 +87,7 @@ export default class App extends PureComponent<Props, State> {
 
   handlePredictFailure(res: any) {
     this.setState({
-      status: "Opp...someething went wrong, maybe try again later"
+      statusText: "Opp...someething went wrong, maybe try again later"
     });
     console.log(res);
   }
