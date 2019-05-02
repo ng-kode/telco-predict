@@ -44,7 +44,7 @@ export default class App extends PureComponent<Props, State> {
     });
   };
 
-  handlePredictClick = () => {
+  createLabels = (): number[] => {
     const data: number[] = [];
 
     attributes.forEach(attr => {
@@ -63,8 +63,13 @@ export default class App extends PureComponent<Props, State> {
       }
     });
 
+    return data;
+  };
+
+  handlePredictClick = () => {
     this.setState({ statusText: "Making inference..." });
 
+    const data = this.createLabels();
     postPrediction(data)
       .then(res =>
         res.json().then((parsedRes: PredictResponse) => {
@@ -87,7 +92,7 @@ export default class App extends PureComponent<Props, State> {
 
   handlePredictFailure(res: any) {
     this.setState({
-      statusText: "Opp...someething went wrong, maybe try again later"
+      statusText: "Opps...someething went wrong, maybe try again later"
     });
     console.log(res);
   }
@@ -96,7 +101,12 @@ export default class App extends PureComponent<Props, State> {
     const { statusText } = this.state;
     return (
       <div>
-        <h3>Will this customer leave soon (churn) ?</h3>
+        <h2>Playground</h2>
+        <p>
+          Let's make some good guesses. Set the values of these 19 behavorial
+          features and click predict to see what will happen.
+        </p>
+
         <div className="row">
           {attributes.map(attr =>
             attr.isNumerical ? (
@@ -122,11 +132,25 @@ export default class App extends PureComponent<Props, State> {
           )}
         </div>
 
-        <button className="btn btn-primary" onClick={this.handlePredictClick}>
-          Predict
-        </button>
-
-        {!!statusText && <span className="m-3">{statusText}</span>}
+        <div className="mt-3 mb-5 text-center">
+          <div className="mb-2">
+            When you click{" "}
+            <button
+              className="btn btn-primary ml-1"
+              onClick={this.handlePredictClick}
+            >
+              Predict
+            </button>
+          </div>
+          <div>Vectorized feature data {this.createLabels().join(", ")}</div>
+          <div>&darr;</div>
+          <div>Model hosted in SageMaker Endpoint</div>
+          <div>&darr;</div>
+          <div>
+            Will this customer leave ?{" "}
+            {!!statusText && <span className="ml-3">{statusText}</span>}
+          </div>
+        </div>
       </div>
     );
   }
