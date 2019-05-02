@@ -92,7 +92,7 @@ export default class App extends PureComponent<Props, State> {
 
   handlePredictFailure(res: any) {
     this.setState({
-      statusText: "Opps...someething went wrong, maybe try again later"
+      statusText: "Opps...something went wrong, maybe try again later"
     });
     console.log(res);
   }
@@ -169,8 +169,10 @@ export default class App extends PureComponent<Props, State> {
           <div>Model hosted in SageMaker Endpoint</div>
           <div>&darr;</div>
           <div>
-            Will this customer leave ?{" "}
-            {!!statusText && <span className="ml-3">{statusText}</span>}
+            Will this customer leave ?
+            {!!statusText && (
+              <span className="ml-2 text-success">{statusText}</span>
+            )}
           </div>
         </div>
       </div>
