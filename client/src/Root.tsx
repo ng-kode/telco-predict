@@ -1,11 +1,11 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import App from "./App";
+import PredictSection from "./PredictSection";
 
 function Root() {
   return (
     <div className="container">
-      <App />
+      <PredictSection />
     </div>
   );
 }
